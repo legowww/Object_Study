@@ -1,6 +1,6 @@
 package Chapter2;
 
-public class AmountDiscountPolicy extends DiscountPolicy{
+public class AmountDiscountPolicy extends DefaultDiscountPolicy{
     //고정금액
     private Money discountAmount;
 
