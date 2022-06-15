@@ -13,7 +13,7 @@ public abstract class DefaultDiscountPolicy implements DiscountPolicy{
         this.conditions = Arrays.asList(conditions);
     }
 
-    //DiscountPolicy 메서드를 오버라이드
+    //DiscountPolicy 인터페이스를 오버라이드
     @Override
     public Money calculateDiscountAmount(Screening screening) {
         for (DiscountCondition each : conditions) {

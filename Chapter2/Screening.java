@@ -17,12 +17,12 @@ public class Screening {
         return whenScreened;
     }
 
-    // 상영시간의 순번과 같다면
+    //상영시간의 순번과 같다면
     public boolean isSequence(int sequence) {
         return this.sequence == sequence;
     }
 
-    //원래의 영화 요금
+    //영화 요금
     public Money getMovieFee() {
         return movie.getFee();
     }
