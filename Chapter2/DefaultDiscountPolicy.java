@@ -13,7 +13,7 @@ public abstract class DefaultDiscountPolicy implements DiscountPolicy{
         this.conditions = Arrays.asList(conditions);
     }
 
-    //DiscountPolicy 인터페이스를 오버라이드
+    //DiscountPolicy 인터페이스를 오버라이드, 상속된 메서드의 오버라이드는 캡슐화를 침해한다고 생각할 수 있다.
     @Override
     public Money calculateDiscountAmount(Screening screening) {
         for (DiscountCondition each : conditions) {

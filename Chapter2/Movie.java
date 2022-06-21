@@ -8,7 +8,7 @@ public class Movie {
     private Money fee;
     private DiscountPolicy discountPolicy; // 합성: 다른 객체의 인스턴스를 자신의 인스턴스 변수로 포함하여 재사용
 
-
+    //합성 사용 시 장점
     public void changeDiscountPolicy(DiscountPolicy discountPolicy) {
         this.discountPolicy = discountPolicy;
     }
