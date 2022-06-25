@@ -1,9 +1,12 @@
 package Chapter4;
 
-import Chapter2.DiscountCondition;
+import Chapter4.DiscountCondition;
 import Chapter2.Money;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,11 +61,46 @@ public class Movie {
         return movieType;
     }
 
-    public void setMovieType(MovieType movieType) {
-        this.movieType = movieType;
+    public Money calculateAmountDiscountFee() {
+        if (movieType != MovieType.AMOUNT_DISCOUNT) {
+            throw new IllegalArgumentException();
+        }
+        return fee.minus(discountAmount);
     }
 
-    public Money getDiscountAmount() {
+    public Money calculatePercentDiscountFee() {
+        if (movieType != MovieType.PERCENT_DISCOUNT) {
+            throw new IllegalArgumentException();
+        }
+        return fee.minus(fee.times(discountPercent));
+    }
+
+    public Money calculateNoneDiscountFee() {
+        if (movieType != MovieType.NONE_DISCOUNT) {
+            throw new IllegalArgumentException();
+        }
+        return fee;
+    }
+
+    public boolean isDiscountable(LocalDateTime whenScreened, int sequence) {
+        for (DiscountCondition condition : discountConditions) {
+            // PERIOD 이름이 바뀔 경우 수정해야 한다 -> 내부 구현 참조중이므로 캡슐화 저해
+            if (condition.getType() == DiscountConditionType.PERIOD) {
+                //조건 충족 조건이 바뀌어서 인자가 추가되면 수정해야 한다.
+                if (condition.isDiscountable(whenScreened.getDayOfWeek(), whenScreened.toLocalTime())) {
+                    return true;
+                }
+            } else {
+                if (condition.isDiscountable(sequence)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+        public Money getDiscountAmount() {
         return discountAmount;
     }
 

@@ -18,6 +18,23 @@ public class DiscountCondition {
         return type;
     }
 
+    //인자로 넘어온 dayOfWeek, time 은 외부에 DiscountCondition 의 조건을 노출시키므로 캡슐화 저해의 요인이다.
+    public boolean isDiscountable(DayOfWeek dayOfWeek, LocalTime time) {
+        if (type != DiscountConditionType.PERIOD) {
+            throw new IllegalArgumentException();
+        }
+        return this.dayOfWeek.equals(dayOfWeek) && this.startTime.compareTo(time) <= 0 &&
+                this.endTime.compareTo(time) >= 0;
+    }
+
+    public boolean isDiscountable(int sequence) {
+        if (type != DiscountConditionType.SEQUENCE) {
+            throw new IllegalArgumentException();
+        }
+        return this.sequence == sequence;
+    }
+
+
     public void setType(DiscountConditionType type) {
         this.type = type;
     }

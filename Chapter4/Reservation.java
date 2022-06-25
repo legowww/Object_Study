@@ -1,12 +1,14 @@
 package Chapter4;
 
+import Chapter2.Money;
+
 public class Reservation {
     private Customer customer;
     private Screening screening;
-    private Movie fee;
+    private Money fee;
     private int audienceCount;
 
-    public Reservation(Customer customer, Screening screening, Movie fee, int audienceCount) {
+    public Reservation(Customer customer, Screening screening, Money fee, int audienceCount) {
         this.customer = customer;
         this.screening = screening;
         this.fee = fee;
@@ -29,11 +31,11 @@ public class Reservation {
         this.screening = screening;
     }
 
-    public Movie getFee() {
+    public Money getFee() {
         return fee;
     }
 
-    public void setFee(Movie fee) {
+    public void setFee(Money fee) {
         this.fee = fee;
     }
 
