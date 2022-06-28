@@ -20,6 +20,8 @@ public class Screening {
         return sequence;
     }
 
+    //GRASP CREATOR 패턴: Reservation 에 대해 잘 알고 있거나, 정보 전문가 클래스에게 생성 책임을 할당하자.
+    //이미 결합돼 있는 객체에 사용하다면 결합도가 그대로 유지된다.
     public Reservation reserve(Customer customer, int audienceCount) {
         return new Reservation(customer, this, calculateFee(audienceCount), audienceCount);
     }

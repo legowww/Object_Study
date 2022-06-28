@@ -1,33 +1,18 @@
 package Chapter5;
 
-import Chapter5.DiscountConditionType;
 
-import java.time.DayOfWeek;
-import java.time.LocalTime;
-
-public class DiscountCondition {
-    private DiscountConditionType type;
-    //순번 조건일 경우에만 사용되는 변수
-    private int sequence;
-    //기간 조건일 경우에만 사용되는 변수
-    private DayOfWeek dayOfWeek;
-    private LocalTime startTime;
-    private LocalTime endTime;
-
-    public boolean isSatisfiedBy(Screening screening) {
-        if (type == DiscountConditionType.PERIOD) {
-            return isSatisfiedByPeriod(screening);
-        }
-        return isSatisfiedBySequence(screening);
-    }
-
-    private boolean isSatisfiedBySequence(Screening screening) {
-        return sequence == screening.getSequence();
-    }
-
-    private boolean isSatisfiedByPeriod(Screening screening) {
-        return dayOfWeek.equals(screening.getWhenScreened().getDayOfWeek()) &&
-                startTime.compareTo(screening.getWhenScreened().toLocalTime()) <= 0 &&
-                endTime.compareTo(screening.getWhenScreened().toLocalTime()) >= 0;
-    }
+/**
+ * 다형성을 통해 분리하기:
+ * GRASP: 다형성 패턴
+ *
+ *  Movie 의 입장에서는 할인 여부를 판단하는 책임을 수행하는 클래스를 구분하는 것은 중요하지 않다.
+ * 역할의 등장: SequenceCondition 와 PeriodCondition 은 동일한 책임을 수행하므로 동일한 역할이다. 역할은 대체 가능성을 의미한다.
+ * 즉, Movie 는 구체적인 클래스를 알지 못한 채 역할(DiscountCondition)에 대해서만 결합되도록 의존성을 제거할 수 있게 된다.
+ *
+ * 역할은 추상 클래스 또는 인터페이스를 사용한다.
+ * 추상 클래스: 역할을 대체하는 클래스들 사이에서 구현을 공유해야 할 필요가 있을 때 사용한다.
+ * 인터페이스: 역할을 대체하는 클래스의 책임만 정의하고 싶을 때 사용한다.
+ */
+public interface DiscountCondition {
+    boolean isSatisfiedBy(Screening screening);
 }
