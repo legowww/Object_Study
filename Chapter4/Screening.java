@@ -15,6 +15,7 @@ public class Screening {
             case AMOUNT_DISCOUNT:
                 //조건과 영화가 수정될 경우 상영도 수정하게 된다. -> 응집도 낮음(변경이 여러 클래스의 변경을 유발)
                 if (movie.isDiscountable(whenScreened, sequence)) {
+                    //정책 이름 노출
                     return movie.calculateAmountDiscountFee().times(audienceCount);
                 }
             case PERCENT_DISCOUNT:
