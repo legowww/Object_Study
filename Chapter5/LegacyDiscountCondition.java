@@ -53,6 +53,6 @@ public class LegacyDiscountCondition {
      *    isSatisfiedByPeriod 는 dayOfWeek, startTime, endTime 만을 사용한다.
      *    따라서 클래스의 응집도를 높이기 위해서는 속성 그룹과 해당 그룹에 접근하는 메서드 그룹을 기준으로 클래스를 분리해야 한다.
      *
-     *  다음 파트: 다형성으로 해결
+     *  다음 파트: 클래스 분리 후, 결합도 문제를 다형성으로 해결
      */
 }

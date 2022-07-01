@@ -20,8 +20,8 @@ public class Screening {
         return sequence;
     }
 
-    //GRASP CREATOR 패턴: Reservation 에 대해 잘 알고 있거나, 정보 전문가 클래스에게 생성 책임을 할당하자.
-    //이미 결합돼 있는 객체에 사용하다면 결합도가 그대로 유지된다.
+    //GRASP CREATOR 패턴: Screening 은 Reservation 을 초기화하는데 필요한 데이터를 가지고 있다.
+    //만약 결합돼 있는 객체에 CREATOR 패턴을 사용하다면 결합도가 그대로 유지된다.
     public Reservation reserve(Customer customer, int audienceCount) {
         return new Reservation(customer, this, calculateFee(audienceCount), audienceCount);
     }
@@ -30,9 +30,8 @@ public class Screening {
     public Money calculateFee(int audienceCount) {
         /**
          * calculateMovieFee(Screening screening): 이 메세지는 수신자인 Movie 가 아니라 송신자인 Screening 의 의도를 표현한다.
-         * 또한 Screening 이 Movie 의 내부 구현에 대한 아무 지식도 없이 메세지를 결정하고 있다. -> 캡슐화
+         * 또한 Screening 이 Movie 의 내부 구현을 고려하지 않고 필요한 메세지를 결정했기 때문에 Movie 의 캡슐화가 가능하다.
          */
         return movie.calculateMovieFee(this).times(audienceCount);
     }
-
 }
