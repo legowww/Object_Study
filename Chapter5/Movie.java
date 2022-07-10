@@ -19,9 +19,10 @@ import java.util.List;
  *       객체의 타입에 따라 변하는 행동이 있다면 타입을 분리하여 명시적인 클래스로 정의하고(discountAmount -> AmountDiscountMovie)
  *       각 타입에 다형적으로 행동하는 책임(calculateDiscountAmount @Override)을 사용했다.
  *
- * 정보 보호 패턴: 예측 가능한 변경으로 클래스들이 불안정 할 거 샅다면 안정적인 인터페이스 뒤로 변경을 캡슐화하라.
+ * 정보 보호 패턴: 예측 가능한 변경으로 클래스들이 불안정할 것 같다면 안정적인 인터페이스 뒤로 변경을 캡슐화하라.
  *
- *       Screening 은 Movie 와 메세지를 통해 다형적으로 협력하고 있기 때문에, 새로운 Movie 클래스가 Screening 은 영향받지 않는다. 이를 인터페이스 뒤로 캡슐화 됐다고 말한다.
+ *       Screening 은 Movie 와 메세지를 통해 다형적으로 협력하고 있기 때문에, 새로운 Movie 클래스가 생겨나도 Screening 은 영향받지 않는다. 
+         이를 인터페이스 뒤로 캡슐화 됐다고 말한다.
  */
 
 
