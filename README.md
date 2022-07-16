@@ -161,5 +161,5 @@ isSatifiedByPeriod, isSatifiedBySequence -> isSatifiedBy
 ```
 
 ```java
-4. 명령-쿼리 법칙: CHAPTRE6 코드 참조
+4. 명령-쿼리 분리 법칙: CHAPTRE6 코드 참조하자. 명령-쿼리 인터페이스를 한 메서드에서 같이 사용할 경우 에러를 발생할 수 있다.
 ```
