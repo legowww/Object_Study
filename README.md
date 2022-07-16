@@ -115,27 +115,34 @@
 클래스 내부의 메서드가 아래 조건을 만족하는 인스턴스에만 메세지를 전송하도록 프로그래밍해야 한다.
 <this 객체, this의 속성, this의 속성인 컬렉션의 요소, 메서드의 매개변수, 메서드 내에서 생성된 지역객체>
 
-
+- 디미터 법칙 적용
 public class ReservationAgency {
     public Reservation reserve(Screening screening, Customer customer, int audienceCount) {
         Money fee = screening.calculateFee(audienceCount);
         return new Reservation(customer, screening, fee, audienceCount);
     }
 }
-- 디미터 법칙 적용 -> 메서드의 인자인 Screening 인스턴스에만 메세지를 전송하고 있다. 인스턴스의 내부 구조에 대해서는 전혀 알고있지 않다.
+-> 메서드의 인자인 Screening 인스턴스에만 메세지를 전송하고 있다. 인스턴스의 내부 구조에 대해서는 전혀 알고있지 않다.
 calculateFee()는 Screening 의 퍼블릭 인터페이스이지 내부 구조라고 할 수 없다.
 
+
+- 디미터 법칙 위반
 screening.getMovie().getDiscountConditions();
-- 디미터 법칙 위반 -> 기차가 충돌된 모양처럼 생겨서 기차 충돌이라고 부르는 코드이다. 
-getter()를 통해 내부의 객체들을 참조하는 형태의 코드를 가진다. 
+
+-> 기차 충돌이라고 부르는 코드이다. 보통은 getter()를 통해 내부의 객체를 참조하는 형태의 코드를 가진다. 
 수신자인 screening에게 내부 구조에 대해 물어보고 있으며 메세지 전송자가 메세지 수신자의 내부 구현에 강하게 결합된다.
+
+디미터 법칙을 위반할 경우 인터페이스와 구현의 분리 원칙을 위반하게 된다.
+객체의 내부 구조는 구현에 해당한다. Screening이 Movie를 포함한다는 사실은 Screening의 내부 구현에 속하며 Screening은 자신의 내부 구현을
+자유롭게 변경할 수 있어아 햔다. 그러나 getMovie가 퍼블릭 인터페이스로 노출될 경우 외부에서 내부 구현을 변경할 수 있기 때문에 불안정한 코드를 가지게 된다.
 ```
 ```java
 2. 묻지 말고 시켜라: 디미터 법칙의 코딩 스타일
 screening.getMovie().getDiscountConditions(); 처럼 객체의 상태에 대해 묻지 말고 
 screening.calculateFee(audienceCount); 처럼 원하는 것을 시켜라
 
-객체의 정보를 이용하는 행동을 객체의 외부가 아닌 내부에 위치시키기 때문에 높은 응집도를 가진 클래스를 얻을 수 있다.
+- 객체의 정보를 이용하는 행동을 객체의 외부가 아닌 내부에 위치시키기 때문에 높은 응집도를 가진 클래스를 얻을 수 있다.
+- 묻지 말고 시켜라 스타일인 아래 코드에서는 위두 객체가 어떤 상호작용을 하는지 위임 메서드의 이름을 통해 명시적으로 확인 할 수 있다.
 ```
 ```java
 3. 의도를 드러내는 인터페이스: 인터페이스는 객체가 "어떻게" 하는지가 아니라 "무엇을" 하는지를 서술해야 한다. 
