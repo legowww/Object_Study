@@ -201,7 +201,7 @@ isSatifiedByPeriod, isSatifiedBySequence -> isSatifiedBy
 ```
 
 ---
-# CHAPTER7 의존성 관리하기
+# CHAPTER8 의존성 관리하기
 > 의존성
 ```
 -실행 시점: 의존하는 객체가 정상적으로 동작하기 위해서는 실행 시에 의존 대상 객체가 반드시 존재해야 한다.
