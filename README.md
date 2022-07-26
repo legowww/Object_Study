@@ -280,7 +280,6 @@ public Movie(String title, Duration runningTime, Money fee, DiscountPolicy disco
     this.fee = fee;
     this.discountPolicy = discountPolicy;
 }     
-
     new Movie("아바타",
             Duration.ofMinutes(120),
             Money.wons(10000),
@@ -294,13 +293,11 @@ public Movie(String title, Duration runningTime, Money fee, DiscountPolicy disco
 Movue avatar = new Movie(..);
 //setter 메서드를 이용하면 할인 정책을 교체할 수 있다.
 avatar.setDiscountPolicy(new AmountDiscountPolicy(...));
-
 생성자와 setter 메서드 둘 다 이용하는 방법이 가장 좋다.
   
   
 3. 메서드 실행 시 인자를 이용해 의존성 해결
 public Money calculateMovieFee(Screening screening, DiscountPolicy)
-
 일시적으로만 알고 싶은 정보가 있을 때 사용
 ```
 
@@ -314,7 +311,7 @@ private AmountDiscountPolicy discountPolicy -> 다른 인스턴스와 협력 불
 
 > new는 해롭다
 ```java
-1. new 연산자 를 사용하기 위해서는 구체 클래스의 이름을 직접 기술해야 한다 -> 구체 클래스 의존은 높은 결합도를 의미.
+1. new 연산자를 사용하기 위해서는 구체 클래스의 이름을 직접 기술해야 한다 -> 구체 클래스 의존은 높은 결합도를 의미.
 2. new 연산자에 사용되는 인자들의 값을 알아야 한다 -> 클라이언트가 알아야 하는 지식의 양이 늘어나기 때문에 높은 결합도를 가진다.
 ```
 
@@ -328,6 +325,14 @@ new Movie("아바타",
             new SequenceCondition(10),
             new PeriodCondition(DayOfWeek.MONDAY, LocalTime.of(10, 0), LocalTime.of(11, 59))));   
             
+           
+1. Movie가 DiscountPolicy라는 추상화에 의존하고, DiscountPolicy의 자식 클래스를 추가함으로써
+간단하게 Movie가 사용될 컨텍스트를 확장할 수 있다.
+
+2. 생성자를 통해 DiscountPolicy에 대한 의존성을 명시적으로 드러냈다.
+
+3. new와 같은 구체 클래스를 다뤄야 하는 책임을 Movie 외부인 클라이언트에게 위임했다.
+
 주석 없이도 코드를 읽는 것 만으로도 객체가 어떤 일을 하는지 쉽게 이해할 수 있다.
 위의 코드처럼 의존성을 잘 관리하여 재사용성이 좋고 유연한 코드를 만들어야 한다.
-    ```
+```
