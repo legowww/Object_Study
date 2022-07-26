@@ -200,3 +200,134 @@ isSatifiedByPeriod, isSatifiedBySequence -> isSatifiedBy
 - 부모 타입을 따르는 자식 타입들이 존재하며, 자식 타입들은 다형적으로 행동할 수 있는 책임을 할당받는다.
 ```
 
+---
+# CHAPTER7 의존성 관리하기
+> 의존성
+```
+-실행 시점: 의존하는 객체가 정상적으로 동작하기 위해서는 실행 시에 의존 대상 객체가 반드시 존재해야 한다.
+-구현 시점: 의존 대상 객체가 변경될 경우 의존하는 객체도 함께 변경된다.
+```
+> 의존성의 예시
+```java
+public class PeriodCondition implements DiscountCondition{
+    private DayOfWeek dayOfWeek;
+    private LocalTime startTime;
+    private LocalTime endTime;
+
+    @Override
+    public boolean isSatisfiedBy(Screening screening) {
+        return screening.getStartTime().getDayOfWeek().equals(dayOfWeek) &&
+                startTime.compareTo(screening.getStartTime().toLocalTime()) <= 0 &&
+                endTime.compareTo(screening.getStartTime().toLocalTime()) >= 0;
+    }
+}
+PeriodCondition는 DiscountCondition, Screening, DayOfWeek, LocalTime 클래스에 의존하고 있다.
+의존성이 존재한다는 말은 의존되는 요소가 변경될 때 의존하는 요소도 함께 변경될 수 있다는 것을 의미한다.
+의존성은 단방향으로만 존재할 수 있다. Screening이 변경될 경우 PeriodCondition는 영향을 받지만 역은 성립하지 않는다.
+```
+> 의존성 전이
+```java
+Screening은 Movie클래스에 의존하고 있다. 의존성 전이에 의해 PeriodCondition는 잠재적으로 Movie에 의존한다.
+```
+
+> 런타임 의존성과 컴파일 타임 의존성
+```java
+-런타임 의존성: 애플리케이션이 실행되는 시점을 가르킨다.
+-컴파일 의존성: 보통 코드가 작성된 시점을 가르킨다.
+-> 유연하고 재사용 가능한 코드를 설계하기 위해서 두 종류의 의존성을 서로 다르게 만들어야 한다.
+```
+
+> 추상화에 의존하라 
+```java
+        Movie -----------------> DiscountPolicy
+                                       |
+                               -------------------
+                               |                 |
+                            Amount            Percent
+                        DiscountPolicy     DiscountPolicy
+                        
+컴파일 의존성 시점에서 Movie클래스는 오직 추상 클래스인 DiscountPolicy클래스에만 의존해야 한다. 
+Amount, Percent에 대해서는 전혀 알지 못한다.
+하지만 런타임 의존성 시점에서는 Amount, Percent 인스턴스와 협력할 수 있어야 한다.
+
+어떤 클래스의 인스턴스가 다양한 클래스의 인스턴스와 협력하기 위해서는 협력할 인스턴스의 구체적인 클래스를 알아서는 안 된다.
+실제로 협력할 객체는 런타임에 해결해야 한다.
+클래스가 협력할 객체의 클래스를 명시적으로 드러내고 있다면 다른 클래스의 인스턴스와 협력할 가능성 자체가 없어진다. 
+
+높은 결합도 ------------> 낮은 결합도
+ 구체 클래스, 추상 클래스, 인터페이스
+```
+
+> 컨텍스트 독립성
+```java
+클래스가 사용될 특정한 문맥에 대해 최소한의 가정만으로 이뤄져 있다면 다른 문맥에서 재사용하기가 더 수월해진다. 
+이를 컨텍스트 독립성이라고 부른다. 컨텍스트 독립성은 더 유연한 설계와 변경에 탄력적으로 대응할 수 있게 도와준다.
+```
+
+> 의존성 주입
+```java
+1. 객체를 생성하는 시점에 생성자를 통해 의존성 해결
+- 명시적인 의존성: 모든 경우에 의존성은 명시적으로 퍼블릭 인터페이스에 노출된다. 이를 명시적 의존성이라 부른다.
+
+/**
+    의존성의 대상인 DiscountPolicy가 Movie 생성자 메서드 인자로 사용되고 있다.
+    Movie가 DiscountPolicy에 의존한다는 사실이 퍼블릭 인터페이스에 명시적으로 드러나게 된다.  
+    -> 명시적인 의존성을 사용하기 때문에 컴파일 타임 의존성을 적절한 런타임 의존성으로 교체할 수 있다.
+**/
+public Movie(String title, Duration runningTime, Money fee, DiscountPolicy discountPolicy) {
+    this.title = title;
+    this.runningTime = runningTime;
+    this.fee = fee;
+    this.discountPolicy = discountPolicy;
+}     
+
+    new Movie("아바타",
+            Duration.ofMinutes(120),
+            Money.wons(10000),
+            new AmountDiscountPolicy(Money.wons(800),
+                new SequenceCondition(1),
+                new SequenceCondition(10),
+                new PeriodCondition(DayOfWeek.MONDAY, LocalTime.of(10, 0), LocalTime.of(11, 59))));                
+      
+      
+2. 객체 생성 후 setter 메서드를 통해 의존성 해결
+Movue avatar = new Movie(..);
+//setter 메서드를 이용하면 할인 정책을 교체할 수 있다.
+avatar.setDiscountPolicy(new AmountDiscountPolicy(...));
+
+생성자와 setter 메서드 둘 다 이용하는 방법이 가장 좋다.
+  
+  
+3. 메서드 실행 시 인자를 이용해 의존성 해결
+public Money calculateMovieFee(Screening screening, DiscountPolicy)
+
+일시적으로만 알고 싶은 정보가 있을 때 사용
+```
+
+> 결합도
+```java
+바람직한 의존성은 재사용성과 관련이 있다. 어떤 의존성이 다양한 환경에서 재사용할 수 있다면 바람직한 의존성이다.
+
+private DiscountPolicy discountPolicy; -> 바람직한 의존성 -> 느슨한, 약한 결합도
+private AmountDiscountPolicy discountPolicy -> 다른 인스턴스와 협력 불가능. 바람직하지 않은 의존성 -> 딘딘힌, 강한 결합도
+```
+
+> new는 해롭다
+```java
+1. new 연산자 를 사용하기 위해서는 구체 클래스의 이름을 직접 기술해야 한다 -> 구체 클래스 의존은 높은 결합도를 의미.
+2. new 연산자에 사용되는 인자들의 값을 알아야 한다 -> 클라이언트가 알아야 하는 지식의 양이 늘어나기 때문에 높은 결합도를 가진다.
+```
+
+> 결론
+```java
+new Movie("아바타",
+        Duration.ofMinutes(120),
+        Money.wons(10000),
+        new AmountDiscountPolicy(Money.wons(800),
+            new SequenceCondition(1),
+            new SequenceCondition(10),
+            new PeriodCondition(DayOfWeek.MONDAY, LocalTime.of(10, 0), LocalTime.of(11, 59))));   
+            
+주석 없이도 코드를 읽는 것 만으로도 객체가 어떤 일을 하는지 쉽게 이해할 수 있다.
+위의 코드처럼 의존성을 잘 관리하여 재사용성이 좋고 유연한 코드를 만들어야 한다.
+    ```
