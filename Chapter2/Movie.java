@@ -8,11 +8,14 @@ public class Movie {
     private Money fee;
     private DiscountPolicy discountPolicy; // 합성: 다른 객체의 인스턴스를 자신의 인스턴스 변수로 포함하여 재사용
 
-    //합성 사용 시 장점
+    //의존성주입: setter 방식,
+    //합성 사용 시 장점 재사용 재 주입 가능
     public void changeDiscountPolicy(DiscountPolicy discountPolicy) {
         this.discountPolicy = discountPolicy;
     }
 
+    //생성과 사용이 분리된 상태이다. 외부의 다른 객체가 Movie 에게 생성된 인스턴스를 전달해야 한다는 것을 의미한다.
+    //의존성 주입: 생성자의 인자 -> 퍼블릭 인터페이스로 할인정책 설정 가능, 의존성을 드러낼 수 있는 명시적 의존성!
     //Movie 는 하나의 할인 정책(금액/비율)만을 가질 수 있다.
     //실행 시점에서 Movie 인스턴스 객체가 어떤 할인 정책에 의존하고 있는지(의존성의 대상인지)는 생성자를 통해 확인할 수 있다.
     public Movie(String title, Duration runningTime, Money fee, DiscountPolicy discountPolicy) {

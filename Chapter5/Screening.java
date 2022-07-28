@@ -4,7 +4,7 @@ import Chapter2.Money;
 
 import java.time.LocalDateTime;
 
-//익명의 객체가 보낸 "예메하라" 메세지에 응답할 수 있어야 한다.
+//익명의 객체가 보낸 "예메하라" 메세지에 응답할 수 있어야 한다. -> 정보 전문가 패턴에 따라 Screening 객체가 선택된다.
 public class Screening {
     //Movie 에 가격을 계산하라 메세지를 보내야하기 때문에 참조.
     private Movie movie;
