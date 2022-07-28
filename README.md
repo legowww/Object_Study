@@ -292,13 +292,16 @@ public Movie(String title, Duration runningTime, Money fee, DiscountPolicy disco
 2. 객체 생성 후 setter 메서드를 통해 의존성 해결
 Movue avatar = new Movie(..);
 //setter 메서드를 이용하면 할인 정책을 교체할 수 있다.
+//setter 주입의 단점은 객체가 올바르게 생성되기 위해 어떤 의존성이 필수적인지 명시적이지 않다는 사실이다.
 avatar.setDiscountPolicy(new AmountDiscountPolicy(...));
-생성자와 setter 메서드 둘 다 이용하는 방법이 가장 좋다.
-  
-  
+
+
 3. 메서드 실행 시 인자를 이용해 의존성 해결
-public Money calculateMovieFee(Screening screening, DiscountPolicy)
-일시적으로만 알고 싶은 정보가 있을 때 사용
+//의존성이 한 두개의 메서드에서만 사용된다면 고려해볼만 하다.
+- public Money calculateMovieFee(Screening screening, DiscountPolicy discountPolicy) {}
+- avatar.calculateDiscountAmount(screening, new AmountDiscountPolicy(...));
+
+결론: 생성자와 setter 메서드 둘 다 이용하는 방법이 가장 좋다.
 ```
 
 > 결합도
@@ -352,7 +355,7 @@ new Movie("아바타",
 -> '추상화'에 '의존'하라, 추상화는 확장을 가능하게 하고 추상화에 대한 의존은 폐쇄를 가능하게 한다.
 ```
 >객체의 생성과 사용 분리
-- 객체의 생성과 사용을 함께 맡고 있는 Movie
+- BEFORE: 객체의 생성과 사용을 함께 맡고 있는 Movie
 ```java
 public class Movie {
     ...
@@ -360,7 +363,7 @@ public class Movie {
     //객체의 생성: AmountDiscountPolicy 생성함.
     public Movie(String title, Duration runningTime, Money fee) {
         ...
-        this.discountPolicy = new AmountDiscountPolicy;
+        this.discountPolicy = new AmountDiscountPolicy(...);
     }
     
     //객체의 사용: AmountDiscountPolicy 메세지를 전송하고 있다.
@@ -369,7 +372,7 @@ public class Movie {
     }
 }
 ```
-- 객체의 생성을 전담하는 FACTORY 추가
+- AFTER: 객체의 생성을 전담하는 FACTORY 추가
 
 1. Movie와 AmountDiscountPolicy를 생성하는 책임이 모두 FACTORY로 이동했다.
 2. Client는 사용과 관련된 책임만을 가진다. FACTORY를 통해 생성된 Movie객체를 얻기 위한 것이고 다른 하나는 Movie를 통해 가격을 계산하기 위한 것이다. 
@@ -410,4 +413,13 @@ public class Client {
 PURE FABRICATION은 정보 전문가 패턴을 할당한 결과가 바람직하지 않을 경우 대안으로 사용할 수 있는 패턴이다. 
 도메인 상에는 존재하지 않지만 순수하게 전체 설계의 품질을 높이기 위해 추가된 가공물이다.
 ```
-
+> 의존성 주입
+```java
+//생성자에서 생성이 이루어지지 않고있다. 외부의 다른 객체가 Movie에게 생성된 인스턴스를 전달해야 한다는 것을 의미한다.
+public Movie(String title, Duration runningTime, Money fee, DiscountPolicy discountPolicy) {
+    this.title = title;
+    this.runningTime = runningTime;
+    this.fee = fee;
+    this.discountPolicy = discountPolicy;
+}
+```
