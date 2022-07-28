@@ -406,8 +406,8 @@ public class Client {
 ```
 ![KakaoTalk_20220728_2013231020](https://user-images.githubusercontent.com/70372188/181492245-fd872ddf-509f-4bc0-8c8d-00c664b6babe.jpg)
 
-- PURE FABRICATION
 ```java
+PURE FABRICATION:
 책임 주도 설계에서는 정보 전문가 패턴을 사용하여 객체에게 책임을 할당했다. 
 정보 전문가 패턴은 보통 높은 응집도와 낮은 결합도, 캡슐화를 지킬 수 있게 도와준다.
 PURE FABRICATION은 정보 전문가 패턴을 할당한 결과가 바람직하지 않을 경우 대안으로 사용할 수 있는 패턴이다. 
@@ -423,3 +423,44 @@ public Movie(String title, Duration runningTime, Money fee, DiscountPolicy disco
     this.discountPolicy = discountPolicy;
 }
 ```
+> 숨겨진 의존성은 지양하라
+```java
+객체의 퍼블릭 인터페이스에 노출하라. 의존성을 구현 내부에 숨기면 숨길수록 코드를 이해하기도, 수정하기도 어려워진다.
+내부 구현을 이해할 것을 강요하는 순간 숨겨진 의존성은 캡슐화를 위반하게 된다.
+```
+> 의존성 역전 원칙
+```java
+/**
+ * 상위 수준 클래스인 Movie가 하위 수준 클래스인 AmountDiscountPolicy에 의존한다.
+ * Movie와 관계를 가져야 하는 본질은 영화의 가격을 계산하는 것이다. 어떻게 할인 금액을 계산할 것인지는 본질이 아니다.
+ *
+ * 문제점
+ * 1. 재사용성 문제 발생. 하위 수준 클래스도 같이 재사용해야 한다.
+ * 2. 하위 수준의 변경으로 상위 수준이 변경되서는 곤란하다.
+ */
+public class Moive {
+    private AmountDiscountPolicy discountPolicy;
+}
+```
+의존성은 하위 수준(AmountDiscountPolicy)에서 상위 수준(Moive)으로 향해야하며, 
+상위 수준의 클래스는 하위 수준의 클래스에 의존하면 안된다.
+
+- 해결책: `추상화`에 의존하라
+유연하고 재사용 가능한 설계를 원한다면 모든 의존성의 방향이 추상 클래스나 인터페이스와 같은 추상화를 따라야 한다.
+구체 클래스(Movie)는 의존성의 시작점이어야한다. 의존성의 목적지가 돼서는 안 된다.
+```
+    Movie(의존성 시작) ----------> DiscountPolicy(의존성 목적지)
+                                       |
+                               -------------------
+                               |                 |
+                            Amount            Percent
+                        DiscountPolicy     DiscountPolicy
+                        
+Movie와 AmountDiscountPolicy 모두 추상 클래스인 DiscountPolicy에 의존하고 있다.
+다시 말해서 상위 수준의 클래스와 하위 수준의 클래스 모두 추상화에 의존한다.
+
+이를 의존성 역전 원칙(DIP)이라고 부른다. 역전이 붙은 이유는 그동안의 프로그래밍에서는 상위 모듈에서 하위 모듈에 의존하는 경향이 있었는데,
+이 의존 관계를 하위 모듈에서 상위 모듈에 의존하도록 역전시켰기 때문이다.
+```
+
+
