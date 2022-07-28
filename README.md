@@ -336,3 +336,78 @@ new Movie("아바타",
 주석 없이도 코드를 읽는 것 만으로도 객체가 어떤 일을 하는지 쉽게 이해할 수 있다.
 위의 코드처럼 의존성을 잘 관리하여 재사용성이 좋고 유연한 코드를 만들어야 한다.
 ```
+---
+# CHAPTER9 유연한 설계
+> 개방-폐쇄 원칙(Open-Closed Principle, OCP)
+```java
+소프트웨어 개체(클래스, 모듈, 함수 등등)는 확장에 대해 열려 있어야 하고, 수정에 대해서는 닫혀 있어야 한다.
+-확장: 확장에 대해 열려 있다. 애플리케이션의 요구사항이 변경될 때 이 변경에 맞게 새로운 '동작'을 추가해서 애플리케이션의 기능을 확장할 수 있다.
+-수정: 수정에 대해 닫혀 있다. 기존의 '코드'를 수정하지 않고도 애플리케이션의 동작을 추가하거나 변경할 수 있다.
+
+즉 OCP란, 기존 코드에 아무런 영향도 미치지 않고 새로운 객체 유형과 행위를 추가할 수 있는 객체지향의 특성을 말한다.
+```
+> 어떻게 OCP를 지킬 수 있을까?
+```java
+컴파일타임 의존성을 고정시키고 런타임 의존성을 변경하라
+-> '추상화'에 '의존'하라, 추상화는 확장을 가능하게 하고 추상화에 대한 의존은 폐쇄를 가능하게 한다.
+```
+>객체의 생성과 사용 분리
+- 객체의 생성과 사용을 함께 맡고 있는 Movie
+```java
+public class Movie {
+    ...
+    
+    //객체의 생성: AmountDiscountPolicy 생성함.
+    public Movie(String title, Duration runningTime, Money fee) {
+        ...
+        this.discountPolicy = new AmountDiscountPolicy;
+    }
+    
+    //객체의 사용: AmountDiscountPolicy 메세지를 전송하고 있다.
+    public Money calculateMovieFee(Screening screening) {
+        return fee.minus(discountPolicy.calculateDiscountAmount(screening));
+    }
+}
+```
+- 객체의 생성을 전담하는 FACTORY 추가
+
+1. Movie와 AmountDiscountPolicy를 생성하는 책임이 모두 FACTORY로 이동했다.
+2. Client는 사용과 관련된 책임만을 가진다. FACTORY를 통해 생성된 Movie객체를 얻기 위한 것이고 다른 하나는 Movie를 통해 가격을 계산하기 위한 것이다. 
+3. 도메인과 무관한 인공적인 객체를 PURE FABRICATION(순수한 가공물)이라고 부른다.
+
+```java
+public class Factory {
+    public Movie createAvatarMovie() {
+        return new Movie("아바타",
+                    Duration.ofMinutes(120),
+                    Money.wons(10000),
+                    new AmountDiscountPolicy(Money.wons(800),
+                        new SequenceCondition(1),
+                        new SequenceCondition(10),
+                        new PeriodCondition(DayOfWeek.MONDAY, LocalTime.of(10, 0), LocalTime.of(11, 59))));
+    }
+}
+
+public class Client {
+    private Factory factory;
+
+    public Client(Factory factory) {
+        this.factory = factory;
+    }
+
+    public Money getAvatarFee() {
+        Movie avatar = factory.createAvatarMovie();
+        return avatar.getFee();
+    }
+}
+```
+![KakaoTalk_20220728_2013231020](https://user-images.githubusercontent.com/70372188/181492245-fd872ddf-509f-4bc0-8c8d-00c664b6babe.jpg)
+
+- PURE FABRICATION
+```java
+책임 주도 설계에서는 정보 전문가 패턴을 사용하여 객체에게 책임을 할당했다. 
+정보 전문가 패턴은 보통 높은 응집도와 낮은 결합도, 캡슐화를 지킬 수 있게 도와준다.
+PURE FABRICATION은 정보 전문가 패턴을 할당한 결과가 바람직하지 않을 경우 대안으로 사용할 수 있는 패턴이다. 
+도메인 상에는 존재하지 않지만 순수하게 전체 설계의 품질을 높이기 위해 추가된 가공물이다.
+```
+
