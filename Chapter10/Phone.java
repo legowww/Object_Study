@@ -7,14 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Phone {
+    private static final int LATE_NIGHT_HOUR = 22;
+    enum PhoneType { REGULAR, NIGHTLY }
+
     //10초당 5원 요금제 -> amount=5, seconds=10
     private Money amount;
     private Duration seconds;
     private List<Call> calls = new ArrayList<>();
+    private double taxRate;
 
-    public Phone(Money amount, Duration seconds) {
+    public Phone(Money amount, Duration seconds, Double taxRate) {
         this.amount = amount;
         this.seconds = seconds;
+        this.taxRate = taxRate;
     }
 
     public void call(Call call) {
@@ -39,6 +44,6 @@ public class Phone {
         for (Call call : calls) {
             result = result.plus(amount.times(call.getDuration().getSeconds() / seconds.getSeconds()));
         }
-        return result;
+        return result.plus(result.times(taxRate));
     }
 }
