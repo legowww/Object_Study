@@ -1,4 +1,4 @@
-package Chapter10;
+package Chapter10.ConcreteclassDp;
 
 import Chapter2.Money;
 
@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Phone {
-    private static final int LATE_NIGHT_HOUR = 22;
-    enum PhoneType { REGULAR, NIGHTLY }
-
     //10초당 5원 요금제 -> amount=5, seconds=10
     private Money amount;
     private Duration seconds;
@@ -45,5 +42,9 @@ public class Phone {
             result = result.plus(amount.times(call.getDuration().getSeconds() / seconds.getSeconds()));
         }
         return result.plus(result.times(taxRate));
+    }
+
+    public double getTaxRate() {
+        return taxRate;
     }
 }

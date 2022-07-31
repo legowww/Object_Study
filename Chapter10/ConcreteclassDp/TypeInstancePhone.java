@@ -1,4 +1,4 @@
-package Chapter10;
+package Chapter10.ConcreteclassDp;
 
 import Chapter2.Money;
 
@@ -10,7 +10,7 @@ public class TypeInstancePhone {
     private static final int LATE_NIGHT_HOUR = 22;
     enum PhoneType { REGULAR, NIGHTLY }
 
-    private Phone.PhoneType type;
+    private PhoneType type;
     private Money amount;
     private Money nightlyAmount;
     private Money regularAmount;
@@ -18,14 +18,14 @@ public class TypeInstancePhone {
     private List<Call> calls = new ArrayList<>();
 
     public TypeInstancePhone(Money amount, Duration seconds) {
-        this(Phone.PhoneType.REGULAR, amount, Money.ZERO, Money.ZERO, seconds); //this 는 생성자
+        this(PhoneType.REGULAR, amount, Money.ZERO, Money.ZERO, seconds); //this 는 생성자
     }
 
     public TypeInstancePhone(Money nightlyAmount, Money regularAmount, Duration seconds) {
-        this(Phone.PhoneType.REGULAR, Money.ZERO, nightlyAmount, regularAmount, seconds); //this 는 생성자
+        this(PhoneType.NIGHTLY, Money.ZERO, nightlyAmount, regularAmount, seconds); //this 는 생성자
     }
 
-    public TypeInstancePhone(Phone.PhoneType type, Money amount, Money nightlyAmount, Money regularAmount, Duration seconds) {
+    public TypeInstancePhone(PhoneType type, Money amount, Money nightlyAmount, Money regularAmount, Duration seconds) {
         this.type = type;
         this.amount = amount;
         this.nightlyAmount = nightlyAmount;
@@ -37,7 +37,7 @@ public class TypeInstancePhone {
         Money result = Money.ZERO;
 
         for (Call call : calls) {
-            if (type == Phone.PhoneType.REGULAR) {
+            if (type == PhoneType.REGULAR) {
                 result = result.plus(amount.times(call.getDuration().getSeconds() / seconds.getSeconds()));
             }
             else {
