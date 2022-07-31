@@ -6,6 +6,7 @@ import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalTime;
 
+
 public class Factory {
     public Movie createAvatarMovie() {
         return new Movie("아바타",
