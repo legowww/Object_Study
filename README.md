@@ -309,7 +309,7 @@ avatar.setDiscountPolicy(new AmountDiscountPolicy(...));
 바람직한 의존성은 재사용성과 관련이 있다. 어떤 의존성이 다양한 환경에서 재사용할 수 있다면 바람직한 의존성이다.
 
 private DiscountPolicy discountPolicy; -> 바람직한 의존성 -> 느슨한, 약한 결합도
-private AmountDiscountPolicy discountPolicy -> 다른 인스턴스와 협력 불가능. 바람직하지 않은 의존성 -> 딘딘힌, 강한 결합도
+private AmountDiscountPolicy discountPolicy -> 다른 인스턴스와 협력 불가능. 바람직하지 않은 의존성 -> , 강한 결합도
 ```
 
 > new는 해롭다
@@ -428,7 +428,7 @@ public Movie(String title, Duration runningTime, Money fee, DiscountPolicy disco
 객체의 퍼블릭 인터페이스에 노출하라. 의존성을 구현 내부에 숨기면 숨길수록 코드를 이해하기도, 수정하기도 어려워진다.
 내부 구현을 이해할 것을 강요하는 순간 숨겨진 의존성은 캡슐화를 위반하게 된다.
 ```
-> 의존성 역전 원칙
+> 의존성 역전 원칙(Dependency inversion principle, DIP)
 ```java
 /**
  * 상위 수준 클래스인 Movie가 하위 수준 클래스인 AmountDiscountPolicy에 의존한다.
