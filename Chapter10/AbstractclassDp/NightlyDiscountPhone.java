@@ -1,19 +1,19 @@
 package Chapter10.AbstractclassDp;
 
 import Chapter10.ConcreteclassDp.Call;
-import Chapter10.ConcreteclassDp.Phone;
 import Chapter2.Money;
 
 import java.time.Duration;
 
-public class NightlyDiscountPhone extends AbstractPhone {
+public class NightlyDiscountPhone extends Phone {
     private static final int LATE_NIGHT_HOUR = 22;
 
     private Money nightlyAmount;
     private Money regularAmount;
     private Duration seconds;
 
-    public NightlyDiscountPhone(Money nightlyAmount, Money regularAmount, Duration seconds) {
+    public NightlyDiscountPhone(Money nightlyAmount, Money regularAmount, Duration seconds, Double taxRate) {
+        super(taxRate);
         this.nightlyAmount = nightlyAmount;
         this.regularAmount = regularAmount;
         this.seconds = seconds;
