@@ -1,4 +1,4 @@
-package Chapter10.AbstractclassDp;
+package Chapter11.usingExtend;
 
 import Chapter10.ConcreteclassDp.Call;
 import Chapter2.Money;
@@ -28,11 +28,7 @@ import java.util.List;
  */
 public abstract class Phone {
     private List<Call> calls = new ArrayList<>();
-    private double taxRate;
 
-    public Phone(double taxRate) {
-        this.taxRate = taxRate;
-    }
 
     //1st. 자식 클래스들 간 공통 코드를 가지는 메서드가 존재한다면, 차이점을 메서드로 추출하고(calculateCallFee) 자식 클래스에 남긴다.
     //2nd. 중복 코드(calculateFee)는 부모 클래스(AbstractPhone)로 옮긴다.
@@ -40,14 +36,12 @@ public abstract class Phone {
     //요약: 차이에 의한 프로그래밍 사용(차이점->자식 클래스, 공통점-> 부모 클래스)
     public Money calculateFee() {
         Money result = Money.ZERO;
-
         for(Call call : calls) {
             result = result.plus(calculateCallFee(call));
         }
 
-        return result.plus(result.times(taxRate));
+        return result;
     }
-
 
     //자식 클래스들의 calculateCallFee() 시그니처는 같지만 구현이 서로 다르기 때문에 시그니처만 부모 클래스로 이동한다. -> 추상 메서드로 변경
     protected abstract Money calculateCallFee(Call call);
