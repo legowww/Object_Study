@@ -462,5 +462,101 @@ Movie와 AmountDiscountPolicy 모두 추상 클래스인 DiscountPolicy에 의�
 이를 의존성 역전 원칙(DIP)이라고 부른다. 역전이 붙은 이유는 그동안의 프로그래밍에서는 상위 모듈에서 하위 모듈에 의존하는 경향이 있었는데,
 이 의존 관계를 하위 모듈에서 상위 모듈에 의존하도록 역전시켰기 때문이다.
 ```
+# Chapter10 상속과 코드 재사용
+
+> 중복 코드의 문제점
+```java
+코드를 읽는 사람들에게 중복 코드가 정말 동일한 코드인가? 실수인가? 의도적인가? 등 여러가지 의심을 생성시킨다. 
+하지만 가장 큰 이유는 중복 코드는 변경을 방해한다는 것이다.
+```
+
+> DRY(Dont Repeat Yourself)
+```java
+코드 안에 중복이 존재해서는 안된다. 객체 지향 프로그래밍에서 코드의 중복을 제거하기 위해 상속을 사용한다.
+```
+
+> 구체 클래스 상속의 문제점
+```java
+1. 자식 클래스의 메서드 안에서 super 참조를 이용해 부모 클래스의 메서드를 직접 호출할 경우 두 클래스는 강하게 결합된다. 
+   객체를 사용하는 이유는 구현과 관련된 세부사항을 퍼블릭 인터페이스 뒤로 캡슐화할 수 있기 때문이다. 하지만 상속을 사용할 경우
+   자식 클래스는 부모 클래스의 구현 세부사항에 의존하게 되기 때문에 캡슐화를 약화시킨다. 
+
+2. 상속받은 부모 클래스의 메서드가 자식 클래스의 내부 구조에 대한 규칙을 깨트릴 수 있다.
+
+3. 클래스를 상속하면 자식 클래스와 부모 클래스는 동시에 변경될 수 밖에 없다.
+```
+
+> 추상화에 의존하라
+```java
+public abstract class Phone {
+    private List<Call> calls = new ArrayList<>();
+    private double taxRate;
+
+    public Phone(double taxRate) {
+        this.taxRate = taxRate;
+    }
+
+    //1st. 자식 클래스들 간 공통 코드를 가지는 메서드가 존재한다면, 차이점을 메서드로 추출하고(calculateCallFee) 자식 클래스에 남긴다.
+    //2nd. 중복 코드(calculateFee)는 부모 클래스(AbstractPhone)로 옮긴다.
+    //3rd. 중복 코드(calculateFee)를 부모 클래스에서 추상 메서드로 사용함으로써 재사용성과 응집도를 높인다.
+    //요약: 차이에 의한 프로그래밍 사용(차이점->자식 클래스, 공통점-> 부모 클래스)
+    public Money calculateFee() {
+        Money result = Money.ZERO;
+
+        for(Call call : calls) {
+            result = result.plus(calculateCallFee(call));
+        }
+
+        return result.plus(result.times(taxRate));
+    }
+
+    //자식 클래스들의 calculateCallFee() 시그니처는 같지만 구현이 서로 다르기 때문에 시그니처만 부모 클래스로 이동한다. -> 추상 메서드로 변경
+    protected abstract Money calculateCallFee(Call call);
+}
+```
+```java
+public class NightlyDiscountPhone extends Phone {
+    ...
+    @Override
+    protected Money calculateCallFee(Call call) {
+        if (call.getFrom().getHour() >= LATE_NIGHT_HOUR) {
+            return nightlyAmount.times(call.getDuration().getSeconds() / seconds.getSeconds());
+        }
+
+        return regularAmount.times(call.getDuration().getSeconds() / seconds.getSeconds());
+    }
+}
+```
+```java
+public class RegularPhone extends Phone {
+    ...
+    @Override
+    protected Money calculateCallFee(Call call) {
+        return amount.times(call.getDuration().getSeconds() / seconds.getSeconds());
+    }
+}
+```
 
 
+
+```java
+ 구체 클래스 의존 -> 추상 클래스 의존
+
+ 장점1:
+ 자식 클래스들은 이제 추상 메서드인 calculateCallFee() 에만 의존하면 되므로 결합도가 낮아진다.
+
+ 장점2(SRP):
+ Phone 은 전체 통화 목록 계산, RegularPhone 은 일반 요금 한 건 계산, NightlyDiscountPhone 은 심야 요금 한 건을 계산
+ 하는 방식이 바뀔 경우에만 변경의 이유를 가진다. 이 클래스들은 단일 책임 원칙을 준수하므로 응집도가 높아진다.
+
+ 장점3(DIP):
+ 의존성의 방향이 세부적인 계산 방식인 하위정책(NightlyDiscountPhone)에서 상위정책(Phone)으로 향한다.
+ 의존한다는 것은 꼭 구체 클래스를 인스턴스로 클래스에서 사용하는 것 뿐만 아니라 추상 클래스 혹은 인터페이스를 상속받는 경우도 포함한다.
+
+ 장점4(OCP):
+ 새로운 요금제가 필요하다면 Phone 을 상속받는 자식 클래스를 추가하고 calculateCallFee()만 오버라이딩 하면 된다.
+ 다른 클래스는 수정할 필요가 없다.
+
+ 하지만 부모 클래스에 새로운 인스턴스 필드(taxRate)가 생길 경우에는 자식 클래스에서도 생성자 코드를 수정해야 한다. 
+```
+![KakaoTalk_20220803_125202665](https://user-images.githubusercontent.com/70372188/182520505-99d275d7-7323-420b-a9cd-ba06ec43e83a.jpg)
