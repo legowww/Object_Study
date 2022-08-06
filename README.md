@@ -562,8 +562,40 @@ public class RegularPhone extends Phone {
 ![KakaoTalk_20220803_125202665](https://user-images.githubusercontent.com/70372188/182520505-99d275d7-7323-420b-a9cd-ba06ec43e83a.jpg)
 
 # Chapter11 합성과 유연한 설계
+> 상속의 문제점
+```java
+상속을 사용하여 요금 정책 로직을 작성한 경우 하나의 기능을 추가하기 위해 필요 이상으로 많은 수의 클래스가 생성됐다.
+이를 클래스 폭발이라고 부른다. 
 
-합성은 구현에 의존하지 않는다. 합성은 내부에 포함되는 객체의 구현이 아닌 퍼블릭 인터페이스에 의존한다. 따라서 합성을 이용하면 포함된 객체의
-내부 구현이 변경되더라도 영향을 최소하 할 수 있다.
+클래스 폭발 문제는 자식 클래스가 부모 클래스의 구조에 강하게 결합되도록 강요하는 상속의 근본적인 한계 때문에 발생하는 문제다.
+우리는 컴파일타임 의존성과 런타임 의존성의 거리가 멀수록 설계가 유연해진다는 사실을 알고있다.
+부모와 자식의 관계(TaxableRegularPhone.class)가 컴파일타임에 결정되므로 둘 사이의 관계는 변경될 수 없다.
+상속을 사용한다면, 재사용과 수정은 사실상 불가능하다. 상속을 포기하고 합성을 사용하자.
+```
 
-상속대신 합성을 사용하면 구현에 대한 의존성을 인터페이스에 대한 의존성으로 변경할 수 있다. 다시 말해서 클래스 간 결합도를 낮게 만들 수 있다.
+> 합성
+```java
+합성을 사용하면 구현이 아닌 퍼블릭 인터페이스에 대해서만 의존할 수 있기 때문에 런타임에 객체의 관계를 변경할 수 있다.
+(객체를 생성하는 시점에 생성자를 통해 인스턴스에 대한 의존성을 주입받기 때문, CHAPTER8 참고) 
+
+public class Phone {
+    private List<Call> calls = new ArrayList<>();
+
+    //합성 객체인 RatePolicy는 런타임에 생성자로 의존성을 주입받아야 하기 때문에 인터페이스나 추상 클래스를 사용해야 한다.
+    private RatePolicy ratePolicy;
+    
+    //Phone은 합성 객체인 RatePolicy의 퍼블릭 인터페이스인 calculateFee()에만 의존하면 된다.
+    //상속과 다르게 합성으로 엮여있는 두 클래스는 낮은 결합도를 가질 수 있다.
+    public Money calculateFee() {
+        return ratePolicy.calculateFee(this);
+    }
+```
+
+```java
+합성은 조합을 구성하는 요소들을 개별 클래스로 구현한 후 실행 시점에 인스턴스를 조립하는 방법을 사용하는 것이다.
+
+RegularPolicy regularPolicy = new RegularPolicy(Money.wons(30), Duration.ofSeconds(50));
+RateDiscountablePolicy rateDiscountablePolicy = new RateDiscountablePolicy(regularPolicy, Money.wons(3000));
+TaxablePolicy taxablePolicy = new TaxablePolicy(rateDiscountablePolicy, 0.05);
+Phone phone = new Phone(taxablePolicy);
+```
