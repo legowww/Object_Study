@@ -1,4 +1,4 @@
-package Chapter11.usingExtend;
+package Chapter11.extend;
 
 import Chapter10.ConcreteclassDp.Call;
 import Chapter2.Money;
@@ -8,6 +8,10 @@ import java.util.List;
 
 public abstract class Phone {
     private List<Call> calls = new ArrayList<>();
+
+    public List<Call> getCalls() {
+        return calls;
+    }
 
     public Money calculateFee() {
         Money result = Money.ZERO;
