@@ -551,7 +551,7 @@ public class RegularPhone extends Phone {
 
  장점3(DIP):
  의존성의 방향이 세부적인 계산 방식인 하위정책(NightlyDiscountPhone)에서 상위정책(Phone)으로 향한다.
- 의존한다는 것은 꼭 구체 클래스를 인스턴스로 클래스에서 사용하는 것 뿐만 아니라 추상 클래스 혹은 인터페이스를 상속받는 경우도 포함한다.
+ 의존한다는 추상 클래스 혹은 인터페이스를 상속받는 경우도 포함한다.
 
  장점4(OCP):
  새로운 요금제가 필요하다면 Phone 을 상속받는 자식 클래스를 추가하고 calculateCallFee()만 오버라이딩 하면 된다.
@@ -605,4 +605,45 @@ RegularPolicy regularPolicy = new RegularPolicy(Money.wons(30), Duration.ofSecon
 RateDiscountablePolicy rateDiscountablePolicy = new RateDiscountablePolicy(regularPolicy, Money.wons(3000));
 TaxablePolicy taxablePolicy = new TaxablePolicy(rateDiscountablePolicy, 0.05);
 Phone phone = new Phone(taxablePolicy);
+```
+
+# Chapter12 다형성
+```
+상속을 사용하는 이유는 상속이 클래스들을 계층으로 쌓아 올린 후 상황에 따라 적절한 메서드를 선택할 수 있는 
+메카니즘을 제공해주기 때문이다.
+
+데이터 관점의 상속: 
+상속을 이용하면 부모 클래스에서 정의한 모든 데이터를 자식 클래스의 인스턴스에 자동으로 포함시킬 수 있다.
+
+행동 관점의 상속:
+부모 클래스에서 정의한 일부 메서드 역시 자동으로 자식 클래스에 포함시킬 수 있다.
+```
+
+동일한 메세지를 수신받아도 서로 다른 메서드가 실행 될 수 있는 이유는 업캐스팅과 동적 메서드 메커니즘이 존재하기 때문이다.
+
+- 업캐스팅:
+부모 클래스 타입으로 선언된 변수에 자식 클래스의 인스턴스를 할당하는 것이 가능하다.
+
+```java
+1. 대입문
+Lecture lecture = new GradeLecture(...);
+
+2. 메서드의 파라미터
+public class Professor {
+    public Professor(String name, Lecture lecture) { ... }
+}
+Professor professor = new Professor("다익스트라", new GradeLecture(...));
+```
+
+
+- 동적 바인딩:
+메세지를 수신하는 객체의 타입에 따라 실행되는 메서드가 결정된다. 
+메세지를 처리할 적절한 메서드를 컴파일 시점이 아닌 런타임에 결정하기 때문에 가능하다.
+```
+
+```
+self:
+
+
+super:
 ```
