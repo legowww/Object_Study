@@ -860,3 +860,6 @@ Movie는 DiscountPolicy에 대해서는 알고 있지만 AmountDiscountPolicy와
 앞서 만든 타입 계층(DiscoutPolicy)를 변하지 않는 타입인(Movie)에 합성한다.
 합성은 의존성 주입과 같이 결합도를 느슨하게 유지할 수 있는 방법을 이용하여 추상화에만 의존하게 만든다.
 ```
+
+# CHAPTER15 디자인 패턴과 프레임워크
+
