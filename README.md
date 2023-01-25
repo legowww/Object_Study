@@ -202,6 +202,9 @@ isSatifiedByPeriod, isSatifiedBySequence -> isSatifiedBy
 ---
 # CHAPTER8 의존성 관리하기
 > 의존성
+
+[토비의 스프링 : 의존관계 주입](https://github.com/legowww/til/blob/main/book/toby's-spring-3.1-Vol.1/%EC%9D%98%EC%A1%B4%EA%B4%80%EA%B3%84%20%EC%A3%BC%EC%9E%85.md)
+
 ```
 -실행 시점: 의존하는 객체가 정상적으로 동작하기 위해서는 실행 시에 의존 대상 객체가 반드시 존재해야 한다.
 -구현 시점: 의존 대상 객체가 변경될 경우 의존하는 객체도 함께 변경된다.
