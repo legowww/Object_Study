@@ -16,7 +16,7 @@ public class TicketOffice {
         return tickets.remove(0);
     }
 
-    //인터페이스: 보통 메서드의 이름이 객체의 책임(enter, sellTo...)을 의미하는 경우가 많다. 그리고 인자로 객체가 메서드를 사용하지 않고 깔끔하게 사용되는 경우가 많다.
+    //인터페이스: 보통 메서드의 이름이 객체의 책임(enter, sellTo...)을 의미한다.
     public void sellTicketTo(Audience audience) {
         plusAmount(audience.buy(getTicket()));
     }
